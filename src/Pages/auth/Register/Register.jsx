@@ -8,12 +8,13 @@ import axios from "axios";
 import { twMerge } from "tailwind-merge";
 import { toast } from "sonner";
 
-const loginValidationSchema = yup.object({
+const registerValidationSchema = yup.object({
+  username: yup.string().required("Required"),
   email: yup.string().email("Invalid email").required("Required"),
   password: yup.string().required("Required"),
 });
 
-const Login = ({ LoginModal, toggleLogin }) => {
+const Register = ({ registerModal, toggleRegister }) => {
   const {
     handleChange,
     handleSubmit,
@@ -24,17 +25,18 @@ const Login = ({ LoginModal, toggleLogin }) => {
     isSubmitting,
   } = useFormik({
     initialValues: {
+      username: "",
       email: "",
       password: "",
     },
-    validationSchema: loginValidationSchema,
+    validationSchema: registerValidationSchema,
     onSubmit: async (values) => {
       console.log(values);
       try {
-        await axios.post("http://localhost:5000/api/auth/signin", values, {
+        await axios.post("http://localhost:5000/api/auth/signup", values, {
           withCredentials: true,
         });
-        toast.success("LoggedIn succesfully");
+        toast.success("Registered succesfully");
       } catch (error) {
         if (!error.response) {
           return toast.error("Failed to contact server");
@@ -49,15 +51,15 @@ const Login = ({ LoginModal, toggleLogin }) => {
 
   return (
     <motion.div
-      animate={LoginModal ? { x: 0, display: "flex" } : { x: -1500 }}
+      animate={registerModal ? { x: 0, display: "flex" } : { x: -1500 }}
       transition={{ duration: 1.2 }}
       className="z-50 fixed top-0 left-0  right-0 bottom-0 bg-black/60 hidden"
     >
       <div className="w-full h-full flex items-center">
         <motion.div className="w-[470px] mx-auto bg-mainbgColor px-3 py-3 rounded-md">
           <div className="flex items-center pb-3">
-            <h4 className="flex-1 text-center capitalize">Login</h4>
-            <button onClick={toggleLogin} className="font-bold text-red-500">
+            <h4 className="flex-1 text-center capitalize">Register</h4>
+            <button onClick={toggleRegister} className="font-bold text-red-500">
               <RxCross1 size={18} />
             </button>
           </div>
@@ -83,6 +85,28 @@ const Login = ({ LoginModal, toggleLogin }) => {
                 </div>
               )}
             </div>
+            <div>
+              <h4 className="capitalize text-sm pb-1 tracking-wide text-gray-300">
+                <span>Username</span>
+                <span className="ml-1 text-red-500">*</span>
+              </h4>
+              <input
+                onChange={handleChange}
+                value={values.username}
+                onBlur={handleBlur}
+                name="username"
+                type="text"
+                placeholder="e.g. avator"
+              />
+              {touched.username && errors.username && (
+                <div className="pl-1">
+                  <span className="text-[12px] text-red-600">
+                    {errors.username}
+                  </span>
+                </div>
+              )}
+            </div>
+
             <div>
               <h4 className="capitalize text-sm pb-1 tracking-wide text-gray-300">
                 <span>password</span>
@@ -145,4 +169,4 @@ const Login = ({ LoginModal, toggleLogin }) => {
   );
 };
 
-export default Login;
+export default Register;

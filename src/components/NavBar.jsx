@@ -1,7 +1,7 @@
 import React from "react";
 import Logo from "../assets/logo.png";
 
-const NavBar = ({ toggleLogin }) => {
+const NavBar = ({ toggleLogin, toggleRegister }) => {
   return (
     <div className="flex justify-between items-center  px-10 py-4 h-16">
       <div className="w-24">
@@ -17,7 +17,10 @@ const NavBar = ({ toggleLogin }) => {
         >
           Login
         </button>
-        <button className="bg-green text-white rounded-md px-2 py-1 text-sm  font-medium ">
+        <button
+          onClick={toggleRegister}
+          className="bg-green text-white rounded-md px-2 py-1 text-sm  font-medium "
+        >
           <span>Register</span>
         </button>
       </div>
