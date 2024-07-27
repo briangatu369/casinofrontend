@@ -13,7 +13,7 @@ const loginValidationSchema = yup.object({
   password: yup.string().required("Required"),
 });
 
-const Login = ({ LoginModal, toggleLogin }) => {
+const Login = ({ LoginModal, toggleLogin, toggleRegister }) => {
   const {
     handleChange,
     handleSubmit,
@@ -22,6 +22,7 @@ const Login = ({ LoginModal, toggleLogin }) => {
     errors,
     touched,
     isSubmitting,
+    resetForm,
   } = useFormik({
     initialValues: {
       email: "",
@@ -29,12 +30,14 @@ const Login = ({ LoginModal, toggleLogin }) => {
     },
     validationSchema: loginValidationSchema,
     onSubmit: async (values) => {
-      console.log(values);
       try {
         await axios.post("http://localhost:5000/api/auth/signin", values, {
           withCredentials: true,
         });
+
+        resetForm();
         toast.success("LoggedIn succesfully");
+        toggleLogin();
       } catch (error) {
         if (!error.response) {
           return toast.error("Failed to contact server");
@@ -49,7 +52,7 @@ const Login = ({ LoginModal, toggleLogin }) => {
 
   return (
     <motion.div
-      animate={LoginModal ? { x: 0, display: "flex" } : { x: -1500 }}
+      animate={LoginModal ? { x: 0, display: "flex" } : { x: 1500 }}
       transition={{ duration: 1.2 }}
       className="z-50 fixed top-0 left-0  right-0 bottom-0 bg-black/60 hidden"
     >
@@ -134,8 +137,14 @@ const Login = ({ LoginModal, toggleLogin }) => {
           <div>
             <p className="text-[14px] pt-6  pb-4 flex justify-center gap-1  ">
               <span className="text-gray-400">Don't have an account?</span>
-              <span className="font-medium">
-                <a>Register here</a>
+              <span
+                onClick={() => {
+                  toggleLogin();
+                  toggleRegister();
+                }}
+                className="font-medium cursor-pointer"
+              >
+                <span>Register here</span>
               </span>
             </p>
           </div>

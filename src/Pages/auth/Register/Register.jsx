@@ -14,7 +14,7 @@ const registerValidationSchema = yup.object({
   password: yup.string().required("Required"),
 });
 
-const Register = ({ registerModal, toggleRegister }) => {
+const Register = ({ registerModal, toggleRegister, toggleLogin }) => {
   const {
     handleChange,
     handleSubmit,
@@ -23,6 +23,7 @@ const Register = ({ registerModal, toggleRegister }) => {
     errors,
     touched,
     isSubmitting,
+    resetForm,
   } = useFormik({
     initialValues: {
       username: "",
@@ -36,6 +37,9 @@ const Register = ({ registerModal, toggleRegister }) => {
         await axios.post("http://localhost:5000/api/auth/signup", values, {
           withCredentials: true,
         });
+
+        toggleRegister();
+        resetForm();
         toast.success("Registered succesfully");
       } catch (error) {
         if (!error.response) {
@@ -157,9 +161,15 @@ const Register = ({ registerModal, toggleRegister }) => {
           </form>
           <div>
             <p className="text-[14px] pt-6  pb-4 flex justify-center gap-1  ">
-              <span className="text-gray-400">Don't have an account?</span>
-              <span className="font-medium">
-                <a>Register here</a>
+              <span className="text-gray-400">Already have an account?</span>
+              <span
+                onClick={() => {
+                  toggleLogin();
+                  toggleRegister();
+                }}
+                className="font-medium cursor-pointer"
+              >
+                <span>Login here</span>
               </span>
             </p>
           </div>

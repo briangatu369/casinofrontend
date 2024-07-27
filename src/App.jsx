@@ -4,6 +4,7 @@ import NavBar from "./components/NavBar";
 import { Toaster, toast } from "sonner";
 import Login from "./Pages/auth/Login/Login";
 import useToggle from "./hooks/UseToggle";
+import Cookies from "js-cookie";
 import Register from "./Pages/auth/Register/Register";
 
 function App() {
@@ -28,8 +29,16 @@ function App() {
         registerModal={registerModal}
         toggleRegister={toggleRegister}
       />
-      <Login LoginModal={LoginModal} toggleLogin={toggleLogin} />
-      <Register registerModal={registerModal} toggleRegister={toggleRegister} />
+      <Login
+        LoginModal={LoginModal}
+        toggleLogin={toggleLogin}
+        toggleRegister={toggleRegister}
+      />
+      <Register
+        registerModal={registerModal}
+        toggleRegister={toggleRegister}
+        toggleLogin={toggleLogin}
+      />
     </div>
   );
 }
