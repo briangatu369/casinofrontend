@@ -1,19 +1,24 @@
-import React from "react";
+import React, { useContext } from "react";
 import { RxCross1 } from "react-icons/rx";
 import { motion } from "framer-motion";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { TailSpin } from "react-loader-spinner";
-import axios from "axios";
 import { twMerge } from "tailwind-merge";
 import { toast } from "sonner";
+import { AuthenticationContext } from "../../../../context/AuthenticationProvider";
+import api from "../../../../config/axiosConfig";
+import { AuthModalContext } from "../AuthModal";
 
 const loginValidationSchema = yup.object({
   email: yup.string().email("Invalid email").required("Required"),
   password: yup.string().required("Required"),
 });
 
-const Login = ({ LoginModal, toggleLogin, toggleRegister }) => {
+const Login = () => {
+  const { setIsAuthenticated, setUserData } = useContext(AuthenticationContext);
+  const { LoginModal, toggleLogin, toggleRegister } =
+    useContext(AuthModalContext);
   const {
     handleChange,
     handleSubmit,
@@ -31,11 +36,13 @@ const Login = ({ LoginModal, toggleLogin, toggleRegister }) => {
     validationSchema: loginValidationSchema,
     onSubmit: async (values) => {
       try {
-        await axios.post("http://localhost:5000/api/auth/signin", values, {
-          withCredentials: true,
-        });
+        const response = await api.post("/auth/signin", values);
+
+        const userInfo = response.data;
+        setUserData(userInfo);
 
         resetForm();
+        setIsAuthenticated(true);
         toast.success("LoggedIn succesfully");
         toggleLogin();
       } catch (error) {
