@@ -8,7 +8,7 @@ const NavBar = () => {
   const { toggleLogin, toggleRegister } = useContext(AuthModalContext);
 
   return (
-    <div className="flex justify-between items-center   py-4 h-16">
+    <div className="flex justify-between items-center py-4 h-16">
       <div className="w-24">
         <div className="w-full">
           <img src={Logo} alt="logo" className="w-full  object-contain" />
