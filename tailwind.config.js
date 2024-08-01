@@ -6,8 +6,9 @@ export default {
       colors: {
         green: "var(--green)",
         mainbgColor: "var(--main-bg-color)",
+        bgColor1: "var( --bg-color1)",
       },
     },
   },
-  plugins: [],
+  plugins: [require("daisyui")],
 };

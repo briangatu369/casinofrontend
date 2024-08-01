@@ -3,6 +3,7 @@ import Toaster from "./components/ToasterProvider";
 import Home from "./Pages/Home/Home";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Mines from "./Pages/casino/mines/Mines";
+import AuthModalProvider from "./Pages/auth/AuthModal";
 
 const router = createBrowserRouter([
   { path: "/", element: <Home /> },
@@ -13,7 +14,8 @@ function App() {
   useCheckAuth();
 
   return (
-    <div>
+    <div className="w-full md:max-w-[800px] mx-auto px-3 md:px-0 ">
+      <AuthModalProvider />
       <Toaster />
       <RouterProvider router={router} />
     </div>

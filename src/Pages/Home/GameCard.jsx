@@ -1,5 +1,5 @@
 import React from "react";
-import minesBanner from "../../assets/images/mines/minesBanner.webp";
+import minesBanner from "../../Pages/casino/mines/assets/minesBanner.webp";
 import { Link } from "react-router-dom";
 
 const GameCard = ({ game }) => {

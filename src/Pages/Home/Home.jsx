@@ -5,8 +5,7 @@ import AllGames from "./AllGames";
 
 const Home = () => {
   return (
-    <div className="w-full md:max-w-[800px] mx-auto px-3 md:px-0 ">
-      <AuthModalProvider />
+    <div>
       <HomeBanner />
       <AllGames />
     </div>
