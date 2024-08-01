@@ -1,31 +1,38 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Diamond from "../assets/diamond.svg";
 import Bomb from "../assets/bomb.svg";
+import Cover from "../assets/cover.webp";
+import { twMerge } from "tailwind-merge";
+import { minesContext } from "../minesProvider";
+import { toast } from "sonner";
 
 const GridElement = ({ status }) => {
-  const [hasClicked, setHasClicked] = useState(false);
-  const correctGrid = hasClicked && status === 1;
-  const wrongGrid = hasClicked && status === 0;
-  const waiting = !hasClicked;
+  const [isClicked, setisClicked] = useState(false);
 
-  const displayOutcome = correctGrid ? Diamond : wrongGrid ? Bomb : "closed";
+  const hasCorrectPick = isClicked && status === 1;
+  const displayOutCome = hasCorrectPick ? Diamond : Bomb;
+
+  const placeBet = () => {};
 
   return (
     <div>
-      <button
-        disabled={!hasClicked}
-        className="bg-bgColor1 w-full h-full p-3 rounded-lg"
-      >
-        {hasClicked ? (
+      {isClicked ? (
+        <div className={twMerge("bg-bgColor1 w-full h-full p-3 rounded-lg")}>
           <img
-            src={displayOutcome}
+            src={displayOutCome}
             alt=""
             className="w-[90%] h-[90%] object-contain "
           />
-        ) : (
-          "closed"
-        )}
-      </button>
+        </div>
+      ) : (
+        <button className={twMerge("bg-gray-700 w-full h-full p-3 rounded-lg")}>
+          <img
+            src={Cover}
+            alt="minesCover"
+            className="w-[90%] h-[90%] object-contain "
+          />
+        </button>
+      )}
     </div>
   );
 };
