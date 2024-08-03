@@ -6,12 +6,13 @@ import ControlButton from "./ControlButton";
 import { minesContext } from "../minesProvider";
 
 const MinesControl = () => {
-  const { hasGameStarted } = useContext(minesContext);
+  const { minesState } = useContext(minesContext);
+  const { isGameActive } = minesState;
 
   return (
     <div className="w-full lg:max-w-64 flex flex-col gap-4 bg-slate-800 p-4 rounded-sm">
       <StakeInput />
-      {hasGameStarted && <GameStats />}
+      {minesState?.isGameActive && <GameStats />}
       <BombPicker />
       <ControlButton />
     </div>

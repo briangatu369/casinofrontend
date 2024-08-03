@@ -1,17 +1,16 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useReducer, useState } from "react";
+import { minesInitialState, minesReducer } from "./minesReducer";
 
 export const minesContext = createContext(null);
 
 const MinesProvider = ({ children }) => {
-  const [isBusted, setIsBusted] = useState(false);
-  const [isHasCashedOut, setHasCashedOut] = useState(false);
-  const [hasGameStarted, setHasGameStarted] = useState(false);
-  const [isGameActive, setIsGameActive] = useState(false);
+  const [minesState, minesDispatch] = useReducer(
+    minesReducer,
+    minesInitialState
+  );
 
   return (
-    <minesContext.Provider
-      value={{ isBusted, setIsBusted, hasGameStarted, setHasGameStarted }}
-    >
+    <minesContext.Provider value={{ minesState, minesDispatch }}>
       {children}
     </minesContext.Provider>
   );
