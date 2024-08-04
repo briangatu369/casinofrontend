@@ -1,10 +1,23 @@
-import React from "react";
+import React, { useContext } from "react";
+import { MINESACTION } from "../minesReducer";
+import { minesContext } from "../minesProvider";
 
 const StakeInput = () => {
+  const { minesState, minesDispatch } = useContext(minesContext);
+
+  const updateStake = (value) => {
+    minesDispatch({ type: MINESACTION.UPDATESTAKE, stake: Number(value) });
+  };
+
   return (
     <div>
       <h4 className="text-white/70 text-sm mb-1 font-medium">Bet Amount</h4>
-      <input type="number" className=" bg-mainbgColor text-sm" />
+      <input
+        value={minesState?.stake}
+        onChange={(e) => updateStake(e.target.value)}
+        type="number"
+        className=" bg-mainbgColor text-sm"
+      />
     </div>
   );
 };

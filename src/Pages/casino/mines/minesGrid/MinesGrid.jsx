@@ -1,32 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import GridElement from "./GridElement";
-
-const generateRamdomNumber = () => {
-  const randomNumber = Math.floor(Math.random() * 2);
-  return randomNumber;
-};
+import { minesContext } from "../minesProvider";
 
 const MinesGrid = () => {
-  const initialGridStatus = new Array(25).fill(0);
-
-  const [minesGridStatus, setMinesGridStatus] = useState(initialGridStatus);
-
-  useEffect(() => {
-    const newArray = [];
-    for (let i = 0; i < 25; i++) {
-      const randomNumber = generateRamdomNumber();
-      newArray.push(randomNumber);
-    }
-    setMinesGridStatus(newArray);
-  }, []);
+  const { minesState } = useContext(minesContext);
+  const { minesGame } = minesState;
 
   return (
     <div>
       <div className="w-full lg:w-[410px] ">
         <div className="grid grid-cols-5 gap-2">
-          {minesGridStatus.map((status, index) => {
-            const randomNumber = generateRamdomNumber();
-            return <GridElement key={index} status={status} />;
+          {minesGame?.map((value, index) => {
+            return <GridElement key={index} index={index} value={value} />;
           })}
         </div>
       </div>
