@@ -6,6 +6,8 @@ import { twMerge } from "tailwind-merge";
 import { minesContext } from "../minesProvider";
 import { toast } from "sonner";
 import { MINESACTION } from "../minesReducer";
+import WinSound from "../assets/winsound.wav";
+import BustedSound from "../assets/gameoversound.wav";
 import api from "../../../../../config/axiosConfig";
 
 const GridElement = ({ index, value }) => {
@@ -32,12 +34,14 @@ const GridElement = ({ index, value }) => {
     const { multiplier, payout, isBusted: BUSTED, gameResults } = betDetails;
 
     if (BUSTED) {
+      new Audio(BustedSound).play();
       setisClicked(true);
       minesDispatch({ type: MINESACTION.ISBUSTED, payload: gameResults });
       sessionStorage.removeItem("minesId");
       return;
     }
 
+    new Audio(WinSound).play();
     minesDispatch({
       type: MINESACTION.CORRECTPICK,
       multiplier,
