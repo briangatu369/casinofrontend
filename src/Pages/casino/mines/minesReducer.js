@@ -28,6 +28,7 @@ export const minesReducer = (state, action) => {
         ...state,
         isGameActive: true,
         isBusted: false,
+        hasCashedout: false,
         minesGame: action.payload,
       };
     case MINESACTION.CASHOUT:
@@ -35,6 +36,10 @@ export const minesReducer = (state, action) => {
         ...state,
         isGameActive: false,
         isBusted: false,
+        hasCashedout: true,
+        payout: 0,
+        multiplier: 1,
+        minesGame: action.payload,
       };
     case MINESACTION.ISBUSTED:
       return {

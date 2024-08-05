@@ -49,7 +49,7 @@ const Login = () => {
         if (!error.response) {
           return toast.error("Failed to contact server");
         } else if (error.request.status) {
-          return toast.error(error.response.data);
+          return toast.error("hello");
         } else {
           toast.error("unkown Error occured");
         }

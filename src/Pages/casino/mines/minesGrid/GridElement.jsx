@@ -8,99 +8,72 @@ import { toast } from "sonner";
 import { MINESACTION } from "../minesReducer";
 import WinSound from "../assets/winsound.wav";
 import BustedSound from "../assets/gameoversound.wav";
+import Cashout from "../assets/cashoutsound.wav";
 import api from "../../../../../config/axiosConfig";
 
 const GridElement = ({ index, value }) => {
   const [isClicked, setisClicked] = useState(false);
   const { minesState, minesDispatch } = useContext(minesContext);
-  const { isGameActive, isBusted, payout } = minesState;
+  const { isGameActive, isBusted, payout, hasCashedout } = minesState;
 
   const placeBet = async () => {
+    //game has non started
     if (!isGameActive) {
       return toast.info("Please start the game");
     }
 
     setisClicked(true);
-
     const gameId = sessionStorage.getItem("minesId");
 
-    //logic
-    const response = await api.post("/casino/mines/placebet", {
-      gameId,
-      index,
-    });
-    const gameData = response.data;
-    const { betDetails } = gameData;
-    const { multiplier, payout, isBusted: BUSTED, gameResults } = betDetails;
+    try {
+      const response = await api.post("/casino/mines/placebet", {
+        gameId,
+        index,
+      });
 
-    if (BUSTED) {
-      new Audio(BustedSound).play();
-      setisClicked(true);
-      minesDispatch({ type: MINESACTION.ISBUSTED, payload: gameResults });
-      sessionStorage.removeItem("minesId");
-      return;
+      const gameData = response.data;
+      const { betDetails } = gameData;
+      const {
+        multiplier,
+        payout,
+        isBusted: BUSTED,
+        gameResults,
+        hasCashedout: GRIDCOMPLETED,
+      } = betDetails;
+
+      const voiceEffect = BUSTED
+        ? BustedSound
+        : GRIDCOMPLETED
+        ? Cashout
+        : WinSound;
+      new Audio(voiceEffect).play();
+
+      if (BUSTED) {
+        minesDispatch({ type: MINESACTION.ISBUSTED, payload: gameResults });
+        sessionStorage.removeItem("minesId");
+        return;
+      }
+
+      if (GRIDCOMPLETED) {
+        minesDispatch({ type: MINESACTION.CASHOUT, payload: gameResults });
+        sessionStorage.removeItem("minesId");
+        return;
+      }
+
+      // continue the game
+      minesDispatch({
+        type: MINESACTION.CORRECTPICK,
+        multiplier,
+        payout,
+        payload: gameResults,
+      });
+    } catch (error) {
+      console.error(error);
     }
-
-    new Audio(WinSound).play();
-    minesDispatch({
-      type: MINESACTION.CORRECTPICK,
-      multiplier,
-      payout,
-      payload: gameResults,
-    });
-    setisClicked(true);
-
-    //     {
-    //     "_id": "66af6aeb70eac182c8befd67",
-    //     "userId": "66af5dcb70eac182c8befd36",
-    //     "gameType": "mines",
-    //     "betDetails": {
-    //         "stake": 5,
-    //         "bombs": 3,
-    //         "multiplier": 1.1363636363636365,
-    //         "payout": 5.6818181818181825,
-    //         "AccountBalance": 100000,
-    //         "hasMined": false,
-    //         "isBusted": false,
-    //         "hasCashedout": false,
-    //         "tilesOpened": 1,
-    //         "indexOpened": [
-    //             0
-    //         ],
-    //         "gameResults": [
-    //             1,
-    //             0,
-    //             0,
-    //             0,
-    //             0,
-    //             0,
-    //             0,
-    //             0,
-    //             0,
-    //             0,
-    //             0,
-    //             0,
-    //             0,
-    //             0,
-    //             0,
-    //             0,
-    //             0,
-    //             0,
-    //             0,
-    //             0,
-    //             0,
-    //             0,
-    //             0,
-    //             0,
-    //             0
-    //         ],
-    //         "_id": "66af6aeb70eac182c8befd66"
-    //     },
-    //     "__v": 0
-    // }
   };
 
   useEffect(() => {
+    //restart the game
     if (payout === 0 && !isGameActive) {
       setisClicked(false);
     }
@@ -108,7 +81,7 @@ const GridElement = ({ index, value }) => {
 
   return (
     <div>
-      {isClicked || isBusted ? (
+      {isClicked || isBusted || hasCashedout ? (
         <div className={twMerge("bg-bgColor1 w-full h-full p-3 rounded-lg")}>
           <img
             src={value === 1 ? Diamond : Bomb}

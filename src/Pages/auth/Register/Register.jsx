@@ -6,9 +6,9 @@ import * as yup from "yup";
 import { TailSpin } from "react-loader-spinner";
 import { twMerge } from "tailwind-merge";
 import { toast } from "sonner";
-import { AuthenticationContext } from "../../../../context/AuthenticationProvider";
 import api from "../../../../config/axiosConfig";
 import { AuthModalContext } from "../AuthModal";
+import { AuthenticationContext } from "../../../../context/AuthenticationProvider";
 
 const registerValidationSchema = yup.object({
   username: yup.string().required("Required"),
