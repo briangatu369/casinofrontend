@@ -4,8 +4,9 @@ import { AuthenticationContext } from "../../context/AuthenticationProvider";
 import { AuthModalContext } from "../Pages/auth/AuthModal";
 
 const NavBar = () => {
-  const { isAuthenticated } = useContext(AuthenticationContext);
+  const { isAuthenticated, userData } = useContext(AuthenticationContext);
   const { toggleLogin, toggleRegister } = useContext(AuthModalContext);
+  const { AccountBalance, email } = userData;
 
   return (
     <div className="flex justify-between items-center py-4 h-16">
@@ -17,7 +18,9 @@ const NavBar = () => {
 
       <div>
         {isAuthenticated ? (
-          "Authenticated"
+          <div className="italic">
+            <span>{email}</span>
+          </div>
         ) : (
           <div className="flex gap-6 ">
             <button

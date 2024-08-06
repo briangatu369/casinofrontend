@@ -19,6 +19,7 @@ export const MINESACTION = {
   CORRECTPICK: "correctpick",
   UPDATEBOMBS: "updatebombs",
   UPDATESTAKE: "updatestake",
+  TOGGLELOADING: "toggleloading",
 };
 
 export const minesReducer = (state, action) => {
@@ -69,5 +70,11 @@ export const minesReducer = (state, action) => {
         ...state,
         stake: action.stake,
       };
+    case MINESACTION.TOGGLELOADING: {
+      return {
+        ...state,
+        isLoading: action.loading,
+      };
+    }
   }
 };

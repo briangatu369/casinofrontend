@@ -11,7 +11,7 @@ const StakeInput = () => {
 
   return (
     <div>
-      <h4 className="text-white/70 text-sm mb-1 font-medium">Bet Amount</h4>
+      <h4 className="text-white/70 text-sm mb-1 font-medium">Stake</h4>
       <input
         value={minesState?.stake}
         onChange={(e) => updateStake(e.target.value)}

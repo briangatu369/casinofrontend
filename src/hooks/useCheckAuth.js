@@ -11,9 +11,7 @@ const useCheckAuth = async () => {
       const userInfo = response.data;
       setIsAuthenticated(true);
       setUserData(userInfo);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {

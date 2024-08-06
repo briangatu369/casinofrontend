@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useCallback } from "react";
 import Diamond from "../assets/diamond.svg";
 import Bomb from "../assets/bomb.svg";
 import Cover from "../assets/cover.webp";
@@ -10,19 +10,25 @@ import WinSound from "../assets/winsound.wav";
 import BustedSound from "../assets/gameoversound.wav";
 import Cashout from "../assets/cashoutsound.wav";
 import api from "../../../../../config/axiosConfig";
+import { motion } from "framer-motion";
 
 const GridElement = ({ index, value }) => {
-  const [isClicked, setisClicked] = useState(false);
+  const [isClicked, setIsClicked] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { minesState, minesDispatch } = useContext(minesContext);
   const { isGameActive, isBusted, payout, hasCashedout } = minesState;
 
-  const placeBet = async () => {
-    //game has non started
+  const playSound = (sound) => {
+    new Audio(sound).play();
+  };
+
+  const placeBet = useCallback(async () => {
     if (!isGameActive) {
       return toast.info("Please start the game");
     }
 
-    setisClicked(true);
+    setIsLoading(true);
+    setIsClicked(true);
     const gameId = sessionStorage.getItem("minesId");
 
     try {
@@ -30,9 +36,7 @@ const GridElement = ({ index, value }) => {
         gameId,
         index,
       });
-
-      const gameData = response.data;
-      const { betDetails } = gameData;
+      const { betDetails } = response.data;
       const {
         multiplier,
         payout,
@@ -41,26 +45,21 @@ const GridElement = ({ index, value }) => {
         hasCashedout: GRIDCOMPLETED,
       } = betDetails;
 
-      const voiceEffect = BUSTED
-        ? BustedSound
-        : GRIDCOMPLETED
-        ? Cashout
-        : WinSound;
-      new Audio(voiceEffect).play();
-
       if (BUSTED) {
+        playSound(BustedSound);
         minesDispatch({ type: MINESACTION.ISBUSTED, payload: gameResults });
         sessionStorage.removeItem("minesId");
         return;
       }
 
       if (GRIDCOMPLETED) {
+        playSound(Cashout);
         minesDispatch({ type: MINESACTION.CASHOUT, payload: gameResults });
         sessionStorage.removeItem("minesId");
         return;
       }
 
-      // continue the game
+      playSound(WinSound);
       minesDispatch({
         type: MINESACTION.CORRECTPICK,
         multiplier,
@@ -69,39 +68,42 @@ const GridElement = ({ index, value }) => {
       });
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
-  };
+  }, [index, isGameActive, minesDispatch]);
 
   useEffect(() => {
-    //restart the game
     if (payout === 0 && !isGameActive) {
-      setisClicked(false);
+      setIsClicked(false);
     }
   }, [payout, isGameActive]);
 
   return (
-    <div>
-      {isClicked || isBusted || hasCashedout ? (
-        <div className={twMerge("bg-bgColor1 w-full h-full p-3 rounded-lg")}>
+    <>
+      {isLoading ? (
+        <div className={twMerge("bg-gray-700")}></div>
+      ) : isClicked || isBusted || hasCashedout ? (
+        <div
+          className={twMerge(
+            "w-16 h-16 md:w-20 md:h-20 flex justify-center items-center bg-bgColor1 rounded-md"
+          )}
+        >
           <img
-            src={value === 1 ? Diamond : Bomb}
-            alt=""
-            className="w-[90%] h-[90%] object-contain "
+            src={value === 1 ? Diamond : value === 0 ? Bomb : Cover}
+            alt={value === 1 ? "Diamond" : value === 0 ? "Bomb" : "Covered"}
+            className="w-[60%] h-[60%] object-contain"
           />
         </div>
       ) : (
         <button
           onClick={placeBet}
-          className={twMerge("bg-gray-700 w-full h-full p-3 rounded-lg")}
-        >
-          <img
-            src={Cover}
-            alt="minesCover"
-            className="w-[90%] h-[90%] object-contain "
-          />
-        </button>
+          className={twMerge(
+            "bg-gray-700 w-16 h-16 md:w-20 md:h-20 rounded-md"
+          )}
+        ></button>
       )}
-    </div>
+    </>
   );
 };
 

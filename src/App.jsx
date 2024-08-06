@@ -14,7 +14,7 @@ function App() {
   useCheckAuth();
 
   return (
-    <div className="w-full md:max-w-[800px] mx-auto px-3 md:px-0 ">
+    <div className="w-[100vw] md:max-w-[800px] mx-auto px-3 ">
       <AuthModalProvider />
       <Toaster />
       <RouterProvider router={router} />

@@ -17,7 +17,7 @@ const registerValidationSchema = yup.object({
 });
 
 const Register = () => {
-  const { setIsAuthenticated } = useContext(AuthenticationContext);
+  const { setUserData, setIsAuthenticated } = useContext(AuthenticationContext);
   const { toggleLogin, registerModal, toggleRegister } =
     useContext(AuthModalContext);
 
@@ -38,22 +38,22 @@ const Register = () => {
     },
     validationSchema: registerValidationSchema,
     onSubmit: async (values) => {
-      console.log(values);
       try {
         const response = await api.post("/auth/signup", values);
 
         const userInfo = response.data;
+        console.log(userInfo);
         setUserData(userInfo);
 
         resetForm();
         setIsAuthenticated(true);
-        toast.success("LoggedIn succesfully");
+        toast.success("Account created successfully");
         toggleRegister();
       } catch (error) {
         if (!error.response) {
-          return toast.error("Failed to contact server");
+          toast.error("Failed to contact server");
         } else if (error.request.status) {
-          return toast.error(error.response.data);
+          toast.error(error.response.data.message);
         } else {
           toast.error("unkown Error occured");
         }

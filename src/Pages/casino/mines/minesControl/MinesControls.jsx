@@ -10,9 +10,9 @@ const MinesControl = () => {
   const { isGameActive } = minesState;
 
   return (
-    <div className="w-full lg:max-w-64 flex flex-col gap-4 bg-slate-800 p-4 rounded-sm">
+    <div className="w-full lg:w-[40%] flex flex-col gap-3 bg-gray-800 py-2 px-3 rounded-md">
       <StakeInput />
-      {minesState?.isGameActive && <GameStats />}
+      {isGameActive && <GameStats />}
       <BombPicker />
       <ControlButton />
     </div>
